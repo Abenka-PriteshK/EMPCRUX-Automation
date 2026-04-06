@@ -1,0 +1,96 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to test against'
+        required: false
+        default: 'staging'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]  # Split tests into 2 shards for parallel execution
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    
+    - name: Run Playwright tests
+      env:
+        CI: true
+        BASE_URL: ${{ secrets.BASE_URL || 'http://localhost:3000' }}
+        ENVIRONMENT: ${{ github.event.inputs.environment || 'staging' }}
+        ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        USER_USERNAME: ${{ secrets.USER_USERNAME }}
+        USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+      run: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.matrix.shard.length }}
+    
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report-${{ matrix.shard }}
+        path: playwright-report/
+        retention-days: 30
+    
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: test-results-${{ matrix.shard }}
+        path: test-results/
+        retention-days: 7
+        if-no-files-found: ignore
+    
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: test-videos-${{ matrix.shard }}
+        path: test-results/**/*.webm
+        retention-days: 7
+        if-no-files-found: ignore
+
+  # Job to merge and publish combined test report
+  merge-reports:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/download-artifact@v4
+      with:
+        name: playwright-report-1
+        path: playwright-report-1/
+    
+    - uses: actions/download-artifact@v4
+      with:
+        name: playwright-report-2
+        path: playwright-report-2/
+    
+    - name: Merge and publish report
+      run: |
+        echo "Test reports downloaded. View individual shard reports in artifacts."
