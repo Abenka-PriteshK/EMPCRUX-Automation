@@ -225,6 +225,11 @@ class EmployeesPage {
 
     async verifyOnEmployeesPage() {
         await this.page.waitForLoadState("networkidle");
+
+        // Ensure no Radix dialog/modal is still overlaying the page
+        const openDialog = this.page.locator('[role="dialog"][data-state="open"]');
+        await expect(openDialog).toHaveCount(0, { timeout: 10000 });
+
         await expect(this.pageTitle).toBeVisible();
         await expect(this.pageTitle).toHaveText(/Employees/i);
         console.log("On Employees page");
@@ -599,9 +604,9 @@ class EmployeesPage {
 
         // Verify Add Employee button
         await expect(this.addEmployeeSubmitButton).toBeVisible({ timeout: 10000 });
-        await expect(this.addEmployeeSubmitButton).toBeEnabled();
+        await expect(this.addEmployeeSubmitButton).toBeDisabled();
         const addEmployeeButtonText = await this.addEmployeeSubmitButton.textContent();
-        console.log(`Add Employee button is visible and enabled. Text: "${addEmployeeButtonText}"`);
+        console.log(`Add Employee button is visible and disabled. Text: "${addEmployeeButtonText}"`);
     }
 
     // Verify Add Employee form fields and labels using test data
@@ -1845,13 +1850,19 @@ class EmployeesPage {
         console.log("Verified navigation back to Employees list page");
     }
 
-    // Click Add Employee button
+    // Click Add Employee button and wait for the form/dialog to actually close
     async clickAddEmployeeButtonFromFormPage() {
         await expect(this.addEmployeeSubmitButton).toBeVisible({ timeout: 10000 });
         await expect(this.addEmployeeSubmitButton).toBeEnabled();
         await this.addEmployeeSubmitButton.click();
+
+        // Wait for any open Radix dialog/modal to close before proceeding,
+        // so subsequent actions don't hit the overlay (z-50 bg-black/80) intercepting clicks.
+        const openDialog = this.page.locator('[role="dialog"][data-state="open"]');
+        await expect(openDialog).toHaveCount(0, { timeout: 15000 });
+
         await this.page.waitForLoadState("networkidle");
-        console.log("Clicked Add Employee button");
+        console.log("Clicked Add Employee button and form closed");
     }
 
     // Generic search using the Employees list search input

@@ -44,8 +44,8 @@ test("Verify all projects are displayed in the project table list", { tag: '@smo
   await expect(projectsPage.projectsTable).toBeVisible({ timeout: 10000 });
   console.log("Projects table is visible");
 
-  // Verify there are projects in the list
-  const projectsCount = await projectsPage.projectsList.count();
+  // Verify there are projects in the list (robust count across paginated pages)
+  const projectsCount = await projectsPage.getTotalProjectsCountFromList();
   expect(projectsCount).toBeGreaterThan(0);
   console.log(`Step 3: Verified ${projectsCount} project(s) are displayed in the project table list`);
 });

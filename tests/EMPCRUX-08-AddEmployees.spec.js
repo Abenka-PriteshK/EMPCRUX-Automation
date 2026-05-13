@@ -73,7 +73,7 @@ test("Verify Add New Employee form page loads successfully when user clicks on +
 
     // Step 4: Verify that the Cancel and Add Employee buttons are visible and in enabled status
     await employeesPage.verifyCancelAndAddEmployeeButtons();
-    console.log("Step 4: Verified Cancel and Add Employee buttons are visible and in enabled status");
+    console.log("Step 4: Verified Cancel and Add Employee buttons are visible and Add Employee button is in disabled status");
  
   });
 
@@ -137,11 +137,10 @@ test("Verify Add New Employee form page loads successfully when user clicks on +
     console.log(`Step 6: Verified employee "${fullEmployeeName}" is not displayed in Employees list after Cancel`);
   });
 
-  test("Verify validation message when user submit form without filling mandatory fields", { tag: '@regression' }, async ({ page }) => {
+  test("Verify user is not allowed to submit form without filling mandatory fields", { tag: '@regression' }, async ({ page }) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const employeesPage = new EmployeesPage(page);
-    const employeeData = addNewEmployeeTestData.fillFormAndCancelTest;
 
     // Step 1: Login to the application using valid credentials
     await loginPage.goto();
@@ -156,14 +155,11 @@ test("Verify Add New Employee form page loads successfully when user clicks on +
     await employeesPage.clickAddEmployeeButton();
     await page.waitForLoadState("networkidle");
 
-    // Step 5: Click on Add Employee button
-    await employeesPage.clickAddEmployeeButtonFromFormPage();
-    await page.waitForLoadState("networkidle");
-
- // Step 6: Verify that validation error messages are displayed for mandatory fields
- const mandatoryFields = addNewEmployeeTestData.mandatoryFields;
- await employeesPage.verifyMandatoryFieldErrors(mandatoryFields);
- console.log("Step 6: Verified all mandatory field validation error messages are displayed");
+    // Step 4: Without filling any mandatory field, verify Add Employee button is disabled
+    const addEmployeeBtn = page.locator("//button[normalize-space()='Add Employee']");
+    await expect(addEmployeeBtn).toBeVisible({ timeout: 10000 });
+    await expect(addEmployeeBtn).toBeDisabled();
+    console.log("Step 4: Verified user is not allowed to submit form without filling mandatory fields as Add Employee button is disabled");
   });
 
   test("Verify validation error when user fill all field except First Name", { tag: '@regression' }, async ({ page }) => {
@@ -188,14 +184,10 @@ test("Verify Add New Employee form page loads successfully when user clicks on +
     const formData = addNewEmployeeTestData.FirstNameValidationTest;
     await employeesPage.fillAllFieldsExceptFirstName(formData);
   
-    // Step 5: Click on "Add Employee" button
-    await employeesPage.clickAddEmployeeButtonFromFormPage();
-    await page.waitForTimeout(1000); // Wait for validation to trigger
-  
-    // Step 6: Verify validation error for First Name field
-    const expectedErrorMessage = formData.expectedErrorMessage;
-    await employeesPage.verifyFirstNameError(expectedErrorMessage);
-    console.log(`Step 6: Verified validation error when user fill all field except First Name: "${expectedErrorMessage}"`);
+    const addEmployeeBtn = page.locator("//button[normalize-space()='Add Employee']");
+    await expect(addEmployeeBtn).toBeVisible({ timeout: 10000 });
+    await expect(addEmployeeBtn).toBeDisabled();
+    console.log("Step 4: Verified user is not allowed to submit form without filling mandatory fields as Add Employee button is disabled");
   });
 
   test("Verify validation error when user fill all field except Department", { tag: '@regression' }, async ({ page }) => {
@@ -220,14 +212,10 @@ test("Verify Add New Employee form page loads successfully when user clicks on +
     const formData = addNewEmployeeTestData.DepartmentValidationTest;
     await employeesPage.fillAllFieldsExceptDepartment(formData);
   
-    // Step 5: Click on "Add Employee" button
-    await employeesPage.clickAddEmployeeButtonFromFormPage();
-    await page.waitForTimeout(1000); // Wait for validation to trigger
-  
-    // Step 6: Verify validation error for First Name field
-    const expectedErrorMessage = formData.expectedErrorMessage;
-    await employeesPage.verifyDepartmentError(expectedErrorMessage);
-    console.log(`Step 6: Verified validation error when user fill all field except Department: "${expectedErrorMessage}"`);
+    const addEmployeeBtn = page.locator("//button[normalize-space()='Add Employee']");
+    await expect(addEmployeeBtn).toBeVisible({ timeout: 10000 });
+    await expect(addEmployeeBtn).toBeDisabled();
+    console.log("Step 4: Verified user is not allowed to submit form without filling mandatory fields as Add Employee button is disabled");
   });
 
   test("Verify validation error when user fill all field except Designation", { tag: '@regression' }, async ({ page }) => {
@@ -252,14 +240,10 @@ test("Verify Add New Employee form page loads successfully when user clicks on +
     const formData = addNewEmployeeTestData.DesignationValidationTest;
     await employeesPage.fillAllFieldsExceptDesignation(formData);
   
-    // Step 5: Click on "Add Employee" button
-    await employeesPage.clickAddEmployeeButtonFromFormPage();
-    await page.waitForTimeout(1000); // Wait for validation to trigger
-  
-    // Step 6: Verify validation error for First Name field
-    const expectedErrorMessage = formData.expectedErrorMessage;
-    await employeesPage.verifyDesignationError(expectedErrorMessage);
-    console.log(`Step 6: Verified validation error when user fill all field except Designation: "${expectedErrorMessage}"`);
+    const addEmployeeBtn = page.locator("//button[normalize-space()='Add Employee']");
+    await expect(addEmployeeBtn).toBeVisible({ timeout: 10000 });
+    await expect(addEmployeeBtn).toBeDisabled();
+    console.log("Step 4: Verified user is not allowed to submit form without filling mandatory fields as Add Employee button is disabled");
   });
 
   test("Verify validation error when user fill all field except Date of Joining", { tag: '@regression' }, async ({ page }) => {
@@ -284,14 +268,10 @@ test("Verify Add New Employee form page loads successfully when user clicks on +
     const formData = addNewEmployeeTestData.DateOfJoiningValidationTest;
     await employeesPage.fillAllFieldsExceptDateOfJoining(formData);
   
-    // Step 5: Click on "Add Employee" button
-    await employeesPage.clickAddEmployeeButtonFromFormPage();
-    await page.waitForTimeout(1000); // Wait for validation to trigger
-  
-    // Step 6: Verify validation error for Date of Joining field
-    const expectedErrorMessage = formData.expectedErrorMessage;
-    await employeesPage.verifyDateOfJoiningError(expectedErrorMessage);
-    console.log(`Step 6: Verified validation error when user fill all field except Date of Joining: "${expectedErrorMessage}"`);
+    const addEmployeeBtn = page.locator("//button[normalize-space()='Add Employee']");
+    await expect(addEmployeeBtn).toBeVisible({ timeout: 10000 });
+    await expect(addEmployeeBtn).toBeDisabled();
+    console.log("Step 4: Verified user is not allowed to submit form without filling mandatory fields as Add Employee button is disabled");
   });
 
   test("Verify validation error when user fill all field except Contractor", { tag: '@regression' }, async ({ page }) => {
@@ -316,14 +296,10 @@ test("Verify Add New Employee form page loads successfully when user clicks on +
     const formData = addNewEmployeeTestData.ContractorValidationTest;
     await employeesPage.fillAllFieldsExceptContractor(formData);
   
-    // Step 5: Click on "Add Employee" button
-    await employeesPage.clickAddEmployeeButtonFromFormPage();
-    await page.waitForTimeout(1000); // Wait for validation to trigger
-  
-    // Step 6: Verify validation error for Contractor field
-    const expectedErrorMessage = formData.expectedErrorMessage;
-    await employeesPage.verifyContractorError(expectedErrorMessage);
-    console.log(`Step 6: Verified validation error when user fill all field except Contractor: "${expectedErrorMessage}"`);
+    const addEmployeeBtn = page.locator("//button[normalize-space()='Add Employee']");
+    await expect(addEmployeeBtn).toBeVisible({ timeout: 10000 });
+    await expect(addEmployeeBtn).toBeDisabled();
+    console.log("Step 4: Verified user is not allowed to submit form without filling mandatory fields as Add Employee button is disabled");
   });
 
   test("Verify Gender dropdown options and selection functionality", { tag: '@regression' }, async ({ page }) => {

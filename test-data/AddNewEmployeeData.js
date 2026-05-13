@@ -270,7 +270,7 @@ const addNewEmployeeTestData = {
         firstName: "Mukesh",
         middleName: "Kumar",
         lastName: "Ahuja",
-        officialEmail: "pka@exmaple.com",
+        officialEmail: "pka@gmail.com",
         department: "Engineering",
         subDepartment: "Testing",
         designation: "QA Manager",

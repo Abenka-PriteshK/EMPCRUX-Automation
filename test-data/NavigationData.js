@@ -22,6 +22,11 @@ const navigationTestData = {
             description: "Verify Tasks navigation"
         },
 
+        {
+            name: "Overtime",
+            expectedTitle: "Overtime",
+            description: "Verify Overtime navigation"
+        },
 
         {
             name: "Contractors",

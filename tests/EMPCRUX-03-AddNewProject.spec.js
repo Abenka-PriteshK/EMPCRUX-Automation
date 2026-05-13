@@ -385,3 +385,50 @@ test.describe("Add New Project - Successful Project Creation", { tag: ["@smoke",
         console.log("Test completed successfully - Project created, verified in list, then deleted and removal verified");
     });
 });
+
+// Regression cleanup: delete seeded/temporary projects from list
+test.describe("Projects - Delete Existing Projects", { tag: "@regression" }, () => {
+    
+    test.beforeEach(async ({ page }) => {
+        const loginPage = new LoginPage(page);
+        const dashboardPage = new DashboardPage(page);
+        
+        // Navigate to application and login
+        await loginPage.goto();
+        await loginPage.validlogin(credentials.admin.username, credentials.admin.password);
+        
+        // Wait for dashboard to load
+        await page.waitForLoadState("networkidle");
+        await expect(page).toHaveURL(new RegExp("/dashboard"));
+        
+        // Navigate to Projects page
+        await dashboardPage.clickNavigationMenu("Projects");
+        await page.waitForLoadState("networkidle");
+    });
+
+    test('Delete "Automation Test Project" and "Test Project" from Projects page', async ({ page }) => {
+        const projectsPage = new ProjectsPage(page);
+        const projectsToDelete = ["Automation Test Project", "Test Project"];
+
+        for (const projectName of projectsToDelete) {
+            // Filter list for stable row targeting
+            await projectsPage.searchProject(projectName);
+
+            // Delete only if the project exists, so reruns remain stable
+            const projectExists = await projectsPage.isProjectVisible(projectName);
+            if (projectExists) {
+                await projectsPage.clickDeleteIconForProject(projectName);
+                await projectsPage.verifyDeleteModalIsVisible();
+                await projectsPage.verifyDeleteMessageText(projectName);
+                await projectsPage.confirmDelete();
+                await projectsPage.verifyProjectNotPresent(projectName);
+                console.log(`Deleted project: ${projectName}`);
+            } else {
+                console.log(`Project not found. Skipping delete for: ${projectName}`);
+            }
+
+            // Clear search before checking next project
+            await projectsPage.searchProject("");
+        }
+    });
+});
