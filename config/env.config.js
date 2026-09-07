@@ -9,15 +9,15 @@ const environment = process.env.ENVIRONMENT || 'dev';
 // Environment-specific configurations
 const environments = {
   dev: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000/login',
+    baseURL: process.env.BASE_URL || 'https://aryan-vms.empcrux.com',
     apiURL: process.env.API_URL || 'http://localhost:3000/api',
   },
   staging: {
-    baseURL: process.env.BASE_URL || 'https://vms.staging.abenka.com/login',
+    baseURL: process.env.BASE_URL || 'https://aryan-vms.empcrux.com',
     apiURL: process.env.API_URL || 'https://vms.staging.abenka.com/api',
   },
   prod: {
-    baseURL: process.env.BASE_URL || 'https://vms.abenka.com/login',
+    baseURL: process.env.BASE_URL || 'https://aryan-vms.empcrux.com',
     apiURL: process.env.API_URL || 'https://vms.abenka.com/api',
   },
 };
